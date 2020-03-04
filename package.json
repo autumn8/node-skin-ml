@@ -13,5 +13,8 @@
     "@tensorflow/tfjs-node": "^1.5.2",
     "@tensorflow/tfjs-node-gpu": "^1.5.2",
     "uuid": "^7.0.1"
+  },
+  "devDependencies": {
+    "yargs": "^15.1.0"
   }
 }
