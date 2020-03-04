@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const argv = require('yargs').argv;
 const LESION_TYPE = require('./lesionType');
-const {loadImage, createTensorFromImage}= require('./utils');
+const {createTensorFromImage}= require('./utils');
 const TRAINING_DATA_PATH = './data/prepared/train';
 const TESTING_DATA_PATH = './data/prepared/test';
 
@@ -18,7 +18,7 @@ function getData(dir) {
   tf.util.shuffle(fileNames);
   fileNames.forEach(async fileName => {
     const filePath = path.join(dir, fileName);    
-    const image = await loadImage(filePath);
+    const image =  fs.readFileSync(filePath);
     const tensor = createTensorFromImage(image, 96, 96);  
     features.push(tensor);
     const isMalignant = fileName.endsWith(`_${LESION_TYPE.MALIGNANT}.jpg`);
@@ -26,29 +26,19 @@ function getData(dir) {
   });
 
   return {
-    features,
-    labels
+    features: tf.concat(features),
+    labels: tf.oneHot(tf.tensor1d(labels, 'int32'), 2).toFloat()
   }
 }
 
 async function trainModel() {
   const trainingData = getData(TRAINING_DATA_PATH);
-  const testData = getData(TESTING_DATA_PATH);
-
-  const trainingDataTensor = {
-    images: tf.concat(trainingData.features),
-    labels: tf.oneHot(tf.tensor1d(trainingData.labels, 'int32'), 2).toFloat()
-  } 
-  
-  const testingDataTensor = {
-    images: tf.concat(testData.features),
-    labels: tf.oneHot(tf.tensor1d(testData.labels, 'int32'), 2).toFloat()
-  }
+  const testData = getData(TESTING_DATA_PATH); 
 
   model.summary();
   
   const history = [];
-  const modelTrainingResult = await model.fit(trainingDataTensor.images, trainingDataTensor.labels, {
+  const modelTrainingResult = await model.fit(trainingData.features, trainingData.labels, {
     epochs: 100,
     batchSize: 32,
     shuffle: true,
@@ -63,7 +53,7 @@ async function trainModel() {
   });
 
 
-  const modelEvaluation = model.evaluate(testingDataTensor.images, testingDataTensor.labels);
+  const modelEvaluation = model.evaluate(testingData.features, testingData.labels);
 
   console.log(
       `\nEvaluation result:\n` +

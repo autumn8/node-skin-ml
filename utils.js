@@ -2,12 +2,7 @@ const fs = require('fs');
 const tf = require('@tensorflow/tfjs-node');
 
 function loadImage(filePath) {  
-  return new Promise((resolve, reject) => {
-    fs.readFile(filePath, (err, data) => {
-      if (err) reject(err);
-      resolve(data);
-    });
-  });
+  return fs.readFileSync(filePath);
 }
 
 function createTensorFromImage(image, width = 224, height = 224) {

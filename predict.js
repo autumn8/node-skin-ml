@@ -10,7 +10,7 @@ async function makePrediction() {
   let fileNames = fs.readdirSync(predictFolder);    
   fileNames.forEach(async fileName => {
     const filePath = path.join(predictFolder, fileName);    
-    const image = await loadImage(filePath);
+    const image = fs.readFileSync(filePath);
     const tensor = createTensorFromImage(image, 96, 96);    
     const predictions = await model.predict(tensor).data();    
     const lesionPrediction = Array.from(predictions);
