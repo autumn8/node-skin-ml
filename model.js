@@ -15,11 +15,13 @@ model.add(tf.layers.conv2d({
   kernelSize: kernel_size,
   activation: 'relu',
 }));
-model.add(tf.layers.conv2d({
+
+/* model.add(tf.layers.conv2d({
   filters: first_filters,
   kernelSize: kernel_size,
   activation: 'relu',
-}));
+})); */
+
 model.add(tf.layers.maxPooling2d({poolSize: pool_size}));
 model.add(tf.layers.dropout({rate: dropout_conv}));
 
@@ -28,16 +30,19 @@ model.add(tf.layers.conv2d({
   kernelSize: kernel_size,
   activation: 'relu',
 }));
-model.add(tf.layers.conv2d({
+
+/* model.add(tf.layers.conv2d({
   filters: second_filters,
   kernelSize: kernel_size,
   activation: 'relu',
 }));
+
 model.add(tf.layers.conv2d({
   filters: second_filters,
   kernelSize: kernel_size,
   activation: 'relu',
-}));
+})); */
+
 model.add(tf.layers.maxPooling2d({poolSize: pool_size}));
 model.add(tf.layers.dropout({rate: dropout_conv}));
 
@@ -46,16 +51,18 @@ model.add(tf.layers.conv2d({
   kernelSize: kernel_size,
   activation: 'relu',
 }));
-model.add(tf.layers.conv2d({
+
+/* model.add(tf.layers.conv2d({
   filters: third_filters,
   kernelSize: kernel_size,
   activation: 'relu',
 }));
+
 model.add(tf.layers.conv2d({
   filters: third_filters,
   kernelSize: kernel_size,
   activation: 'relu',
-}));
+})); */
 model.add(tf.layers.maxPooling2d({poolSize: pool_size}));
 model.add(tf.layers.dropout({rate: dropout_conv}));
 
@@ -65,7 +72,7 @@ model.add(tf.layers.dense({units: 256, activation: 'relu'}));
 model.add(tf.layers.dropout({rate: dropout_dense}));
 model.add(tf.layers.dense({units: 2, activation: 'softmax'}));
 
-const optimizer = tf.train.adam(0.0001);
+const optimizer = tf.train.adam(0.001);
 model.compile({
   optimizer: optimizer,
   loss: 'binaryCrossentropy',
