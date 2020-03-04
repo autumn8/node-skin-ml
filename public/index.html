@@ -1,0 +1,19 @@
+<html>
+<head>
+  <title>Hello World!</title>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-vis@latest"></script>
+  <script>
+    const socket = io.connect('http://localhost:3000');
+    const accuracySurface = {name: 'Training Accuracy', tab: 'Training'};
+    const lossSurface = {name: 'Training Loss', tab: 'Training'};
+    socket.on('history', function(history){      
+      tfvis.show.history(accuracySurface, history, ['acc','val_acc']);
+      tfvis.show.history(lossSurface, history, ['loss', 'val_loss']);
+    });
+  </script>
+</head>
+<body>
+  <h1>Socket data</h1>  
+</body>
+</html>

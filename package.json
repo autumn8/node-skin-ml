@@ -12,7 +12,8 @@
     "@tensorflow/tfjs": "^1.5.2",
     "@tensorflow/tfjs-node": "^1.5.2",
     "@tensorflow/tfjs-node-gpu": "^1.5.2",
-    "uuid": "^7.0.1"
+    "express": "^4.17.1",
+    "socketio": "^1.0.0"
   },
   "devDependencies": {
     "yargs": "^15.1.0"

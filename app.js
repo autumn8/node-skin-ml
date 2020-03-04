@@ -6,6 +6,27 @@ const LESION_TYPE = require('./lesionType');
 const {createTensorFromImage}= require('./utils');
 const TRAINING_DATA_PATH = './data/prepared/train';
 const TESTING_DATA_PATH = './data/prepared/test';
+const express = require('express');
+const app = express();
+const http = require('http').createServer(app);
+const io = require('socket.io')(http);
+const history = [];
+
+app.use(express.static('public'));
+
+app.get('/', function(req, res){
+  res.sendFile(__dirname + '/index.html');
+});
+
+io.on('connection', function(socket){
+  console.log('a user connected');  
+  io.emit('history', history);   
+});
+
+http.listen(3000, function(){
+  console.log('listening on *:3000');
+});
+
 
 const model = require('./model');
 
@@ -33,26 +54,28 @@ function getData(dir) {
 
 async function trainModel() {
   const trainingData = getData(TRAINING_DATA_PATH);
-  const testData = getData(TESTING_DATA_PATH); 
+  const testingData = getData(TESTING_DATA_PATH); 
 
   model.summary();
   
-  const history = [];
+  
   const modelTrainingResult = await model.fit(trainingData.features, trainingData.labels, {
-    epochs: 100,
+    epochs: 2,
     batchSize: 32,
     shuffle: true,
     validationSplit: 0.6,
     callbacks: {
       onEpochEnd: (epoch, log) => {
+        console.log(epoch);
         history.push(log);
         console.log(history);  
-        //tfvis.show.history(surface, history, ['loss', 'acc']);
+        io.emit('history', history);         
       }
     }
   });
 
-
+  console.log('training complete');
+  console.log(modelTrainingResult);
   const modelEvaluation = model.evaluate(testingData.features, testingData.labels);
 
   console.log(
